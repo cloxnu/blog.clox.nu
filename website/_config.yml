@@ -28,7 +28,7 @@ twitter_username: cloxnu
 github_username:  cloxnu
 
 # Build settings
-destination: ./docs
+destination: ../docs
 theme: minima
 plugins:
   - jekyll-feed
