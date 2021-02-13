@@ -106,7 +106,7 @@ cao
 
 ## GST versus Dynamic programming
 
-Dynamic programming is another way to solve this problem, and there is always said that the dynamic programming costs <img src="https://render.githubusercontent.com/render/math?math=\Theta(mn)">, and the Ukkonen's Algorithm just in linear time. So, let's start an experiment.
+Dynamic programming is another way to solve this problem, and there is always said that the dynamic programming costs $$\Theta(mn)$$, and the Ukkonen's Algorithm just in linear time. So, let's start an experiment.
 
 The code in the `gst_vs_dp.py`, we randomly generated some strings to examine the performance of the two algorithms.
 
