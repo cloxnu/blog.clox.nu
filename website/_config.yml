@@ -23,7 +23,7 @@ bing_verification:
 animated:             false
 show_related_posts:   false
 show_post_footers:    false
-show_social_icons:    false
+show_social_icons:    true
 ajaxify_contact_form: false
 enable_mathjax: true
 extended_fonts: false
@@ -51,7 +51,7 @@ github_username: cloxnu
 reddit_username:
 bitbucket_username:
 stackoverflow_id:
-twitter_username:
+twitter_username: cloxnu
 skype_username:
 steam_nickname:
 google_plus_id:
