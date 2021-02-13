@@ -4,7 +4,7 @@ email:       hi@clox.nu
 author:      Sidney Liu
 description: "A simple, beautiful theme for Jekyll that emphasizes content rather than aesthetic fluff."
 baseurl:     ""
-url:         "https://clox.nu"
+url:         "https://blog.clox.nu"
 date_format: "%b %-d, %Y"
 destination: ../docs
 header_pages:
