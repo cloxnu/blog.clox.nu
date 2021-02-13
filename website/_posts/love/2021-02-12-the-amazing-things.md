@@ -8,3 +8,5 @@ categories: love
 Now, here is another new place to inspire and create amazing things. There is not much space here, but it brings extraordinary encouragement.
 
 I will always love, and pursue love.
+
+![screenshot](/assets/post/2021-02-12-the-amazing-things/screenshot.png)
