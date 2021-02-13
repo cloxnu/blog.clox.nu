@@ -1,0 +1,22 @@
+{
+  "short_name": "cloxnu's blog",
+  "name": "cloxnu's blog",
+  "description": "A simple, beautiful theme for Jekyll that emphasizes content rather than aesthetic fluff.",
+  "icons": [
+    {
+      "src": "/assets/logo/splash-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/assets/logo/favicon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#ffffff"
+}

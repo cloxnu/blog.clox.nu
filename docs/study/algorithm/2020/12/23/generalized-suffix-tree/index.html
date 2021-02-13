@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Generalized Suffix Tree &#8211; cloxnu's blog</title>
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//maxcdn.bootstrapcdn.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An implementation of generalized suffix tree using Ukkonen's algorithm.">
+    <link rel="manifest" type="application/manifest+json; charset=utf-8" href="/manifest.json" />
+    <meta name="robots" content="all">
+    <meta name="author" content="Sidney Liu">
+    
+    <meta name="keywords" content="study, algorithm">
+    <link rel="canonical" href="http://localhost:4000/study/algorithm/2020/12/23/generalized-suffix-tree/">
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed for cloxnu's blog" href="/feed.xml" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/pixyll.css?202102132347" type="text/css">
+
+    <!-- Fonts -->
+    
+    <link href='//fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Lato:900,300' rel='stylesheet' type='text/css'>
+    
+    
+
+    <!-- MathJax -->
+    
+
+    <!-- Verifications -->
+    
+    
+
+    <!-- Open Graph -->
+    <!-- From: https://github.com/mmistakes/hpstr-jekyll-theme/blob/master/_includes/head.html -->
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Generalized Suffix Tree">
+    <meta property="og:description" content="A simple, beautiful theme for Jekyll that emphasizes content rather than aesthetic fluff.">
+    <meta property="og:url" content="http://localhost:4000/study/algorithm/2020/12/23/generalized-suffix-tree/">
+    <meta property="og:site_name" content="cloxnu's blog">
+    
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    
+    <meta name="twitter:title" content="Generalized Suffix Tree" />
+    <meta name="twitter:description" content="An implementation of generalized suffix tree using Ukkonen's algorithm." />
+    <meta name="twitter:url" content="http://localhost:4000/study/algorithm/2020/12/23/generalized-suffix-tree/" />
+    
+
+    <!-- Icons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/assets/logo/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/assets/logo/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/logo/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/assets/logo/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/assets/logo/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/assets/logo/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/logo/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/logo/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="/assets/logo/favicon-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="/assets/logo/favicon-160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="/assets/logo/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/assets/logo/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/assets/logo/favicon-32x32.png" sizes="32x32">
+    <link rel="shortcut icon" href="/assets/logo/favicon.ico">
+
+    
+</head>
+
+<body class="site">
+  
+	
+
+  <div class="site-wrap">
+    <header class="site-header px2 px-responsive">
+  <div class="mt2 wrap">
+    <div class="measure">
+      <a href="/" class="site-title">cloxnu's blog</a>
+      <nav class="site-nav">
+        
+
+
+
+    
+    
+    
+    
+        <a class="nav-link" href="/about/">About</a>
+    
+
+    
+
+
+      </nav>
+      <div class="clearfix"></div>
+      
+    </div>
+  </div>
+</header>
+
+
+    <div class="post p2 p-responsive wrap" role="main">
+      <div class="measure">
+        
+
+
+<div class="post-header mb2">
+  <h1>Generalized Suffix Tree</h1>
+  <span class="post-meta">Dec 23, 2020</span><br>
+  
+  <span class="post-meta small">
+  
+    4 minute read
+  
+  </span>
+</div>
+
+<article class="post-content">
+  
+<p>An implementation of generalized suffix tree using Ukkonen’s algorithm.</p>
+
+<p><strong>In this page:</strong></p>
+
+<ul>
+  <li><a href="#the-longest-common-substring-problem">The longest common substring problem</a></li>
+  <li><a href="#how-it-works">How it works</a></li>
+  <li><a href="#gst-versus-dynamic-programming">GST versus Dynamic programming</a></li>
+</ul>
+
+<hr />
+
+<p><strong>Inspired by:</strong></p>
+
+<p>Ukkonen, E. On-line construction of suffix trees. Algorithmica 14, 249–260 (1995).</p>
+
+<p><a href="https://www.cs.helsinki.fi/u/ukkonen/SuffixT1withFigs.pdf">https://www.cs.helsinki.fi/u/ukkonen/SuffixT1withFigs.pdf</a></p>
+
+<hr />
+
+<h2 id="the-longest-common-substring-problem">The longest common substring problem</h2>
+
+<p>Given two or more strings, find the longest common substring of these strings. Concretely, the longest common substring of the two strings <em>“cacaocac”</em> and <em>“ccaooc”</em> is <em>“cao”</em>. This seems like a simple problem, but until today, it still requires a complicated algorithm to be solved in a reasonable time.</p>
+
+<p>This repo has implemented an algorithm to solve this problem by constructing a tree called Generalized Suffix Tree (GST). GST is a tree structure which contains sets of suffix strings of the origin string. Usually, the string will be appended a unique character <em>”$”</em> for representing “the end”, this is to avoid some nodes not splitting due to repeated ending characters.</p>
+
+<p>There are 2 algorithms for constructing a GST: <strong>McCreight’s algorithm (1976)</strong>, <strong>Ukkonen’s algorithm (1995)</strong>. The latter has been implemented here.</p>
+
+<p>The visualized GST of <em>“cacaocac$”</em> as follows, made in <a href="http://brenden.github.io/ukkonen-animation/">http://brenden.github.io/ukkonen-animation/</a> :</p>
+
+<p><img src="/assets/post/2020-12-23-generalized-suffix-tree/GST4cacaocac.png" alt="GST-for-cacaocac" /></p>
+
+<h2 id="how-it-works">How it works</h2>
+
+<p>After cloning this repo, we can get the same result by running these codes in the <code class="language-plaintext highlighter-rouge">Application.py</code>:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tree</span> <span class="o">=</span> <span class="n">STree</span><span class="p">()</span>
+<span class="n">tree</span><span class="p">.</span><span class="n">build_with_automatic_end</span><span class="p">([</span><span class="s">"cacaocac"</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>and then, something will appear in the console:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cacaocac$ ----&gt; ⊥
+c ----&gt; cacaocac$
+	a ----&gt; a
+		c ----&gt; c
+			aocac$ (end)
+			$ (end)
+		ocac$ (end)
+	$ (end)
+a ----&gt; cacaocac$
+	c ----&gt; c
+		aocac$ (end)
+		$ (end)
+	ocac$ (end)
+ocac$ (end)
+$ (end)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">cacaocac$</code> for root, <code class="language-plaintext highlighter-rouge">⊥</code> for auxiliary state<sup>*</sup>, <code class="language-plaintext highlighter-rouge">----&gt;</code> for suffix link<sup>*</sup>, and a <code class="language-plaintext highlighter-rouge">[tab]</code> represents a deeper level in the tree.</p>
+
+<blockquote>
+  <p><sup>*</sup>auxiliary state: The dummy status of the root’s suffix link, for convenience in programming.
+[Page 3 of the paper for details]</p>
+
+  <p><sup>*</sup>suffix link: Used during the construction of a suffix tree.
+[Page 4 of the paper for details]</p>
+</blockquote>
+
+<p>The method <code class="language-plaintext highlighter-rouge">_update</code>, <code class="language-plaintext highlighter-rouge">_test_and_split</code> and <code class="language-plaintext highlighter-rouge">_canonize</code> of the class <code class="language-plaintext highlighter-rouge">STree</code> in <code class="language-plaintext highlighter-rouge">STree.py</code>, are the complete implementation of the procedure of the same name in the page [12] and [13] in the paper, and the method <code class="language-plaintext highlighter-rouge">build</code> corresponds to the [Algorithm 2.] in the page [14].</p>
+
+<p>But differently, the new <code class="language-plaintext highlighter-rouge">end_idxes</code> property in the <code class="language-plaintext highlighter-rouge">STree</code> contains the indexes of all ending characters <em>”$”</em>. It avoids effectively the construction bias of the suffix tree when the string contains or is filled with <em>”$”</em> symbols.</p>
+
+<p>So, back to the topic, how does this tree solve the longest common substring problem?</p>
+
+<p>In the <code class="language-plaintext highlighter-rouge">Application.py</code>, the <code class="language-plaintext highlighter-rouge">lcs2</code> function find the lcs of two strings. The method <code class="language-plaintext highlighter-rouge">build_with_automatic_end</code> in the <code class="language-plaintext highlighter-rouge">STree</code> will concatenate a list of strings with the ending characters <em>”$”</em>, and construct a suffix tree. With the help of <code class="language-plaintext highlighter-rouge">end_idxes</code>, these <em>”$”</em> are different, and they represent the end of different strings. <code class="language-plaintext highlighter-rouge">STree</code> will automatically treat these <em>”$”</em> as different from other characters, so the character <em>”$”</em> itself is just designed for readability of suffix tree printing. The <code class="language-plaintext highlighter-rouge">lcs2</code> function will traverse the tree and find the deepest non-leaf node that contains the leaf nodes of all string indexes in the string list.</p>
+
+<p>Similarly, it can also be demonstrated using the following codes in <code class="language-plaintext highlighter-rouge">Application.py</code></p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">lcs2</span><span class="p">(</span><span class="s">"cacaocac"</span><span class="p">,</span> <span class="s">"ccaooc"</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">lcs</span><span class="p">([</span><span class="s">"cacaocac"</span><span class="p">,</span> <span class="s">"ccaooc"</span><span class="p">]))</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">lcs</code> function can find the longest common substring of multiple strings.</p>
+
+<p>The last two commands have the same result:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cao
+</code></pre></div></div>
+
+<h2 id="gst-versus-dynamic-programming">GST versus Dynamic programming</h2>
+
+<p>Dynamic programming is another way to solve this problem, and there is always said that the dynamic programming costs <img src="https://render.githubusercontent.com/render/math?math=\Theta(mn)" />, and the Ukkonen’s Algorithm just in linear time. So, let’s start an experiment.</p>
+
+<p>The code in the <code class="language-plaintext highlighter-rouge">gst_vs_dp.py</code>, we randomly generated some strings to examine the performance of the two algorithms.</p>
+
+<p><code class="language-plaintext highlighter-rouge">len</code> is the length range of the strings, <code class="language-plaintext highlighter-rouge">com_len</code> is the length range of the common part of the strings.</p>
+
+<p><code class="language-plaintext highlighter-rouge">len = (800, 1600)</code> <code class="language-plaintext highlighter-rouge">com_len = (100, 200)</code></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>random string has been generated
+gst_res: wTE^s&gt;:x,k~%i3pRtdasZ&gt;eLXrU5gbU#ptQF*?$ta,)k~znS*D/Ja:0L}@.X~i~E~{@NsKlK5c#`4v?v.$O]ts&amp;/LNl&lt;m]ww`Z!4G3vPd:@guRfCuz3DSRNHcVu~[r7s8J`X&amp;/uETtiU[$N0p2.$SV2T&gt;&lt;WTzqLVm:KkC3uE#2SIj63h?3BZYv;G*bl'PnNYhQ0M
+dp_res: wTE^s&gt;:x,k~%i3pRtdasZ&gt;eLXrU5gbU#ptQF*?$ta,)k~znS*D/Ja:0L}@.X~i~E~{@NsKlK5c#`4v?v.$O]ts&amp;/LNl&lt;m]ww`Z!4G3vPd:@guRfCuz3DSRNHcVu~[r7s8J`X&amp;/uETtiU[$N0p2.$SV2T&gt;&lt;WTzqLVm:KkC3uE#2SIj63h?3BZYv;G*bl'PnNYhQ0M
+
+gst_time: 12.598991394042969 ms
+dp_time: 284.3668460845947 ms
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">len = (5000, 8000)</code> <code class="language-plaintext highlighter-rouge">com_len = (250, 800)</code></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>random string has been generated
+gst_res: q3U'GCA9;dw}9nrT#R?"odw~HAK,&amp;l;bd}VQ)h`15TAw6K/I1V]#;OSDj%(XmDp[&amp;i}@$k($Bk8X4c"j(rXff9MK:E#`&gt;B&amp;'SF`CgMP&lt;`XOp!8g%&amp;4fpbq&lt;!Q*o4[9W}TXabj4FTele0?~Cm.S,8~)B(U9&lt;m~[1.9/3XGR/@nIt,X3@k}D"U"h@!/C&amp;92s09RU^DLrqo6[}s}Wlr:,VyYX&gt;f{rx&amp;&gt;8bH`VaZy^3pId.A]XO/zgD@26wN:Y23@t(.&gt;3$T6c8?L'l"ZC?0PK,2tWNqa,S&gt;VTe!!%L^n;;up&lt;:Hw;gUtFp^dD]F8&gt;!'}vg^PNK4K"L7X&lt;w;roH:&amp;&lt;jEzZJJPg5qd'J!SWTP%N!CDDaxr7vBX.4@)9OO!Mg;S;M';VSV]^YZO9ww9k$H;Z^XcXKY@?Naa&lt;jO$LEy`#e1&amp;ywU8Yzq9PNAA^gQ58B?'?)KiKt)$ztM~IrnJ&lt;$;2%%?m"&lt;dme7df&gt;:b?j.A8dM2dH/!K!*o)glG[F&gt;&lt;aZ?c`By5{zEICgq[&lt;M:D"LD;*FPJOzo9o,wXxKz@2];:g$oNrDhc/g{M9z9xTP[FllH/r!YrW!KMG!y(.$mO7Wzj31vMF2&gt;YD?Y"I?t7FX!nWL[S&gt;kLN1Ga7YN'XrG*fxylmtBri/R!0nEGQ3ZG`xQ1o[~Z?1&lt;VKMzKn90J^9#5J&lt;:{3diD*o4Fn.WppQJ7&gt;Z#1cQgV2(GX54S*)0@vQvFs^!/fag#p6kHgwB9{5)u:d9R
+dp_res: q3U'GCA9;dw}9nrT#R?"odw~HAK,&amp;l;bd}VQ)h`15TAw6K/I1V]#;OSDj%(XmDp[&amp;i}@$k($Bk8X4c"j(rXff9MK:E#`&gt;B&amp;'SF`CgMP&lt;`XOp!8g%&amp;4fpbq&lt;!Q*o4[9W}TXabj4FTele0?~Cm.S,8~)B(U9&lt;m~[1.9/3XGR/@nIt,X3@k}D"U"h@!/C&amp;92s09RU^DLrqo6[}s}Wlr:,VyYX&gt;f{rx&amp;&gt;8bH`VaZy^3pId.A]XO/zgD@26wN:Y23@t(.&gt;3$T6c8?L'l"ZC?0PK,2tWNqa,S&gt;VTe!!%L^n;;up&lt;:Hw;gUtFp^dD]F8&gt;!'}vg^PNK4K"L7X&lt;w;roH:&amp;&lt;jEzZJJPg5qd'J!SWTP%N!CDDaxr7vBX.4@)9OO!Mg;S;M';VSV]^YZO9ww9k$H;Z^XcXKY@?Naa&lt;jO$LEy`#e1&amp;ywU8Yzq9PNAA^gQ58B?'?)KiKt)$ztM~IrnJ&lt;$;2%%?m"&lt;dme7df&gt;:b?j.A8dM2dH/!K!*o)glG[F&gt;&lt;aZ?c`By5{zEICgq[&lt;M:D"LD;*FPJOzo9o,wXxKz@2];:g$oNrDhc/g{M9z9xTP[FllH/r!YrW!KMG!y(.$mO7Wzj31vMF2&gt;YD?Y"I?t7FX!nWL[S&gt;kLN1Ga7YN'XrG*fxylmtBri/R!0nEGQ3ZG`xQ1o[~Z?1&lt;VKMzKn90J^9#5J&lt;:{3diD*o4Fn.WppQJ7&gt;Z#1cQgV2(GX54S*)0@vQvFs^!/fag#p6kHgwB9{5)u:d9R
+
+gst_time: 79.45418357849121 ms
+dp_time: 10244.915962219238 ms
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">len = (5000, 8000)</code> <code class="language-plaintext highlighter-rouge">com_len = (250, 800)</code></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>random string has been generated
+gst_res: Hu4XU.if.j/h9DAT3.2RI"9LVeR6qoG}HOB#V[qdN[TQ!%IG#v7l]'4pTA;.G^zhWt%/B0P4ATaG&gt;FDZj?GNH"V%NW(.uL?O.5tJCv6d7[}e.&lt;$SFXv(C&amp;ww&gt;9a'Con(V}MK&lt;exxZ@1.1&lt;7&lt;Wo%wGyjB0FPpcxPLIy^LRZS@c;eel4sUF:iqcGlhz3]z&amp;M&amp;]qk&amp;.H3]vqI7YG)#&amp;}U3sa"6c6H*y{3&gt;9MiHB!W4N1YwR[,qdn:nw$M"g]Ic6S$*[FIzaOZ[fHT&lt;04&lt;$R$[f#.%MscaTy[6?gJ:Qq
+dp_res: Hu4XU.if.j/h9DAT3.2RI"9LVeR6qoG}HOB#V[qdN[TQ!%IG#v7l]'4pTA;.G^zhWt%/B0P4ATaG&gt;FDZj?GNH"V%NW(.uL?O.5tJCv6d7[}e.&lt;$SFXv(C&amp;ww&gt;9a'Con(V}MK&lt;exxZ@1.1&lt;7&lt;Wo%wGyjB0FPpcxPLIy^LRZS@c;eel4sUF:iqcGlhz3]z&amp;M&amp;]qk&amp;.H3]vqI7YG)#&amp;}U3sa"6c6H*y{3&gt;9MiHB!W4N1YwR[,qdn:nw$M"g]Ic6S$*[FIzaOZ[fHT&lt;04&lt;$R$[f#.%MscaTy[6?gJ:Qq
+
+gst_time: 63.52519989013672 ms
+dp_time: 6668.108701705933 ms
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">len = (10000, 20000)</code> <code class="language-plaintext highlighter-rouge">com_len = (500, 1000)</code></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>random string has been generated
+gst_res: hee!!i$;hIn8&amp;;Y)bU2BC^Bu{Ek]2}}`SvD&gt;Fj!{%XS#pl6wMh#CDKe'zk%N@mAC]r9[k:g{!Q&lt;B0NQ"#"E&lt;P@in$7]^fkn3tO:5q:lb%!Y5N3[rJBd7I@,6Uf{hNv5o$M%~]~9IS4#ho}]3A"~B9yLF!0'`R(}le0KAMF/J7@EG/d&amp;W/m`XcBt[,Bp0M8m6J]%#mh.^":CsZw6~!w6eq[)WdAI/'D`Tq.`*t[H5yVEk3mpRKZv&lt;eMZj'R?*zeA,!goeNt"5th.0^LN2xB$wy.*xP(cCW4)zZv#XS.#&lt;&amp;*"spzHfnG:78~P5z%a`Dn1g3&gt;nF5CZm?;EfbKD/(g$!SIAxSRWce"Qf'WbyceqGrh&gt;uhP45R$:h?fJfEFk]@5P{]n2H/KgDGUA~`Q1'&lt;Z}66!s#V&gt;B%&gt;B1L3cIq?;ytc/E?mDmA2;m5LwdI@8)l3@&amp;ZpdKp0'f{VS@ahmmE!f.)kO(nNcVsU?yGEAzu"I/RH:N6"1xFvp~ipR~$7FJ@NLTs[VW^hng1bfc&amp;!ieEbY.)uYN@Ux$(#~]WSyY/alVsiq1uv0u%tVx'kS&gt;x}dkUN5&amp;lY!xy&amp;Y]:wZU;gIXZ&gt;h)mS7,au
+dp_res: hee!!i$;hIn8&amp;;Y)bU2BC^Bu{Ek]2}}`SvD&gt;Fj!{%XS#pl6wMh#CDKe'zk%N@mAC]r9[k:g{!Q&lt;B0NQ"#"E&lt;P@in$7]^fkn3tO:5q:lb%!Y5N3[rJBd7I@,6Uf{hNv5o$M%~]~9IS4#ho}]3A"~B9yLF!0'`R(}le0KAMF/J7@EG/d&amp;W/m`XcBt[,Bp0M8m6J]%#mh.^":CsZw6~!w6eq[)WdAI/'D`Tq.`*t[H5yVEk3mpRKZv&lt;eMZj'R?*zeA,!goeNt"5th.0^LN2xB$wy.*xP(cCW4)zZv#XS.#&lt;&amp;*"spzHfnG:78~P5z%a`Dn1g3&gt;nF5CZm?;EfbKD/(g$!SIAxSRWce"Qf'WbyceqGrh&gt;uhP45R$:h?fJfEFk]@5P{]n2H/KgDGUA~`Q1'&lt;Z}66!s#V&gt;B%&gt;B1L3cIq?;ytc/E?mDmA2;m5LwdI@8)l3@&amp;ZpdKp0'f{VS@ahmmE!f.)kO(nNcVsU?yGEAzu"I/RH:N6"1xFvp~ipR~$7FJ@NLTs[VW^hng1bfc&amp;!ieEbY.)uYN@Ux$(#~]WSyY/alVsiq1uv0u%tVx'kS&gt;x}dkUN5&amp;lY!xy&amp;Y]:wZU;gIXZ&gt;h)mS7,au
+
+gst_time: 164.72983360290527 ms
+dp_time: 44179.36301231384 ms
+</code></pre></div></div>
+
+<p>Obviously, dynamic programming takes a lot longer time.</p>
+
+
+</article>
+
+
+
+
+
+
+
+
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="center">
+  <div class="measure">
+    <small>
+      <a href="https://clox.nu">Sidney Liu</a> (<a href="https://twitter.com/cloxnu">@cloxnu</a>).<br>
+      &lt;/&gt; available on <a href="https://github.com/cloxnu/blog.clox.nu">GitHub</a>.
+    </small>
+  </div>
+</footer>
+
+<script type="text/javascript">
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js")
+    }
+</script>
+
+</body>
+</html>
